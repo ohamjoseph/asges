@@ -9,6 +9,7 @@
 /vendor/
 
 /.idea
+/public/node_modules
 ###< symfony/framework-bundle ###
 
 ###> symfony/phpunit-bridge ###
