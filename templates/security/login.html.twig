@@ -1,0 +1,103 @@
+{% extends 'theme/base/base_form.html.twig' %}
+
+{% block title %}Se Connecter{% endblock %}
+
+{% block form %}
+    <div class="card col-6">
+        <div class="card-body">
+            <!-- Logo -->
+            <div class="app-brand justify-content-center">
+
+            </div>
+            <!-- /Logo -->
+            <!--Form-->
+            <form id="formAuthentication" class="mb-3"  method="POST">
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
+
+                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Username</label>
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="inputUsername"
+                            name="username"
+                            value="{{ last_username }}"
+                            placeholder="Entrez votre username"
+                            autofocus
+                            autocomplete="username"
+                            required
+                    />
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label" for="password">Password</label>
+                        <a href="auth-forgot-password-basic.html">
+                            <small>Forgot Password?</small>
+                        </a>
+                    </div>
+                    <div class="input-group input-group-merge">
+                        <input
+                                type="password"
+                                id="inputPassword"
+                                class="form-control"
+                                name="password"
+                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                aria-describedby="password"
+                                autocomplete="current-password"
+                                required
+                        />
+
+
+                        <input type="hidden" name="_csrf_token"
+                               value="{{ csrf_token('authenticate') }}"
+                        >
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember-me" />
+                        <label class="form-check-label" for="remember-me"> Remember Me </label>
+                    </div>
+                </div>
+
+
+                {#
+                Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+                See https://symfony.com/doc/current/security/remember_me.html
+
+                <div class="checkbox mb-3">
+                    <label>
+                        <input type="checkbox" name="_remember_me"> Remember me
+                    </label>
+                </div>
+                #}
+                <div class="mb-3">
+                    <button class="btn btn-primary d-grid w-20" type="submit">Sign in</button>
+                </div>
+
+            </form>
+            <!--Form-->
+            <p class="text-center">
+                <span>Already have an account?</span>
+                <a href="auth-login-basic.html">
+                    <span>Sign in instead</span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+
+{% endblock %}
+
