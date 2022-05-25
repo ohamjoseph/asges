@@ -1,20 +1,80 @@
 {% extends 'theme/base/base_main.html.twig' %}
 
-{% block title %}Hello AcceuilController!{% endblock %}
+{% block title %}Les associations{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/Documents/Cours/Master 1/S2/Projets Tutores/assges/asges/src/Controller/AcceuilController.php'|file_link(0) }}">src/Controller/AcceuilController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/Documents/Cours/Master 1/S2/Projets Tutores/assges/asges/templates/acceuil/index.html.twig'|file_link(0) }}">templates/acceuil/index.html.twig</a></code></li>
-    </ul>
+<div class="row">
+    <div class=" mb-3 d-flex justify-content-end">
+        <a href="{{path('app_association.add')}}" class="btn btn-primary m-0">
+            <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Créer une association
+        </a>
+    </div>
 </div>
+<div class="row">
+{% for association in associations %}
+
+    <div class="col-6">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-3 p-1">
+                    <img class="img-fluid rounded-circle" src="{{asset('assets/assets/img/elements/12.jpg')}}"
+                        alt="Card image" />
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{association.nom}}</h5>
+                        <p class="card-text">
+                            {{association.objectif}}
+                        </p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row mb-2 mx-2 g-0">
+                <div class="d-flex justify-content-end" >
+                    <a href="{{path('acceuil.ass.detail', {'id':association.id})}}" class="btn btn-primary mx-2">
+                        <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Consulter
+                    </a>
+                    <a  href="javascript:void(0)" class="btn btn-secondary mx-1">
+                        <span class="tf-icons bx bx-bell"></span>&nbsp; Adherer
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+
+<div class="row">
+{% if isPaginated is defined and isPaginated %}
+    <div class="demo-inline-spacing">
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page!=1 %}
+                    <li class="page-item prev">
+                        <a class="page-link" href="{{path('app_acceuil',{page:page-1})}}"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                    </li>
+                {% endif %}
+
+                {% for i in range(1, nbPage) %}
+                    <li class="page-item {%if page==i %} active {% endif %}">
+                        <a class="page-link" href="{{path('app_acceuil',{page:i})}}">{{i}}</a>
+                    </li>
+                {% endfor %}
+
+                {% if page!=nbPage %}
+                    <li class="page-item next">
+                        <a class="page-link" href="{{path('app_acceuil',{page:page+1})}}"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endif %}
+</div>
+
 {% endblock %}

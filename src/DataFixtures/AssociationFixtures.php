@@ -20,6 +20,10 @@ class AssociationFixtures extends Fixture
             $association->setNoRecipice($faker->randomNumber($nbDigits = NULL, $strict = false));
             $association->setObjectif($faker->text(40));
             $association->setDescription($faker->text(100));
+            $association->setNbrAdherant($faker->randomDigit);
+            $association->setAdresse($faker->streetAddress);
+            $association->setTel($faker->countryCodePrefix = null | true | false, $formatting = null | true | false);
+            $association->setMail($faker->email);
 
             $manager->persist($association);
         }

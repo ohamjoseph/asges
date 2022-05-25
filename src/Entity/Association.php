@@ -25,6 +25,24 @@ class Association
     #[ORM\Column(type: 'text', nullable: true)]
     private $Description;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private $nbrAdherant;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $adresse;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $tel;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $mail;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $siege;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +92,78 @@ class Association
     public function setDescription(?string $Description): self
     {
         $this->Description = $Description;
+
+        return $this;
+    }
+
+    public function getNbrAdherant(): ?int
+    {
+        return $this->nbrAdherant;
+    }
+
+    public function setNbrAdherant(?int $nbrAdherant): self
+    {
+        $this->nbrAdherant = $nbrAdherant;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): self
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getTel(): ?string
+    {
+        return $this->tel;
+    }
+
+    public function setTel(?string $tel): self
+    {
+        $this->tel = $tel;
+
+        return $this;
+    }
+
+    public function getMail(): ?string
+    {
+        return $this->mail;
+    }
+
+    public function setMail(?string $mail): self
+    {
+        $this->mail = $mail;
+
+        return $this;
+    }
+
+    public function getSiege(): ?string
+    {
+        return $this->siege;
+    }
+
+    public function setSiege(?string $siege): self
+    {
+        $this->siege = $siege;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

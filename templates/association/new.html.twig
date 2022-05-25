@@ -1,0 +1,30 @@
+{% extends 'theme/base/base_form.html.twig' %}
+
+{% block title %}New User{% endblock %}
+
+{% block form %}
+
+    <div class="card">
+        <div class="card-body">
+            <!-- Logo -->
+            <div class="app-brand justify-content-center">
+
+            </div>
+            <!-- /Logo -->
+            <!--Form-->
+            <h1>Créer une association</h1>
+
+            {{ include('user/_form.html.twig') }}
+
+            <a href="{{ path('app_acceuil') }}">back to list</a>
+            <!--Form-->
+            <p class="text-center">
+                <span>Already have an account?</span>
+                <a href="auth-login-basic.html">
+                    <span>Sign in instead</span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+{% endblock %}
