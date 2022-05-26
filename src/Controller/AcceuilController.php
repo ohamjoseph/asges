@@ -14,6 +14,14 @@ class AcceuilController extends AbstractController
     #[Route('/{page?1}', name: 'app_acceuil')]
     public function index(ManagerRegistry $doctrine, $page): Response
     {
+        $associationRepo = $doctrine->getRepository(Association::class);
+
+        try {
+            $user = $this->getUser();
+
+        }catch (\Exception $e){
+            //
+        }
         $nbr = 6;
         $repository = $doctrine->getRepository(Association::class);
         $associations = $repository->findBy([], [], $nbr, ($page - 1) * $nbr);
@@ -37,6 +45,7 @@ class AcceuilController extends AbstractController
             $this->addFlash('error', "Cette associtation n'exite pas");
             return $this->redirectToRoute("app_acceuil");
         }
+
 
         return $this->render('acceuil/detail.html.twig', [
             'association' => $association,

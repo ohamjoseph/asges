@@ -10,7 +10,9 @@
         </a>
     </div>
 </div>
+
 <div class="row">
+
 {% for association in associations %}
 
     <div class="col-6">
@@ -36,7 +38,7 @@
                     <a href="{{path('acceuil.ass.detail', {'id':association.id})}}" class="btn btn-primary mx-2">
                         <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Consulter
                     </a>
-                    <a  href="javascript:void(0)" class="btn btn-secondary mx-1">
+                    <a  href="{{path('app_adhesion.add',{'id':association.id})}}" class="btn btn-secondary mx-1">
                         <span class="tf-icons bx bx-bell"></span>&nbsp; Adherer
                     </a>
                     

@@ -3,9 +3,28 @@
 {% block title %}New User{% endblock %}
 
 {% block form %}
-    <h1>Create new User</h1>
+    <div class="card">
+        <div class="card-body">
+            <!-- Logo -->
+            <div class="app-brand justify-content-center">
 
-    {{ include('user/_form.html.twig') }}
+            </div>
+            <!-- /Logo -->
+            <!--Form-->
+            <h1>S'inscrire</h1>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
+            {{ include('user/_form.html.twig') }}
+
+            <!--Form-->
+            <p class="text-center">
+                <span>Already have an account?</span>
+                <a href="auth-login-basic.html">
+                    <span>Sign in instead</span>
+                </a>
+            </p>
+        </div>
+    </div>
+
+
+
 {% endblock %}

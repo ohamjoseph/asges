@@ -19,9 +19,9 @@
                 <div data-i18n="Analytics">Dashboard</div>
               </a>
             </li> -->
-
+          {% if app.user %}
             <!-- Layouts -->
-            <li class="menu-item active">
+            <li class="menu-item {% if adminNav is defined and adminNav %} active {% endif%}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-home-circle"></i>
                 <div data-i18n="Layouts">Administration</div>
@@ -41,10 +41,10 @@
               </ul>
             </li>
 
-            <li class="menu-header small text-uppercase">
+            <li class="menu-header small text-uppercase ">
               <span class="menu-header-text">Mes Informations</span>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {% if associationNav is defined and associationNav %} active {% endif%}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-dock-top"></i>
                 <div data-i18n="Account Settings">Associations</div>
@@ -67,7 +67,7 @@
                 </li>
               </ul>
             </li>
-            <li class="menu-item">
+            <li class="menu-item {% if profilNav is defined and profilNav %} active {% endif%}">
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                 <div data-i18n="Authentications">Profile</div>
@@ -118,7 +118,7 @@
               </a>
             </li> -->
             <!-- User interface -->
-            <li class="menu-item">
+            <li class="menu-item {% if editNav is defined and editNav %} active {% endif%}">
               <a href="javascript:void(0)" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-box"></i>
                 <div data-i18n="User interface">Editeur</div>
@@ -143,12 +143,39 @@
             </li>
 
             <!-- Extended components -->
-            <li class="menu-item">
+            <li class="menu-item {% if gestionNav is defined and gestionNav %} active {% endif%}">
               <a href="javascript:void(0)" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-copy"></i>
                 <div data-i18n="Extended UI">Gestion des Editeurs</div>
               </a>
-              
-            </li>
 
-        </aside>
+            </li>
+          </ul>
+          {% else %}
+            <ul class="menu-inner py-1">
+
+              <li class="menu-item active">
+                <a href="javascript:void(0);" class="menu-link">
+                  <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                  <div data-i18n="Layouts">Acceuil</div>
+                </a>
+              </li>
+
+                <li class="menu-item {% if LoginNav is defined and adminNav %} active {% endif%}">
+                  <a href="{{path('app_login')}}" class="menu-link ">
+                    <i class='menu-icon bx bx-log-in-circle'></i>
+                    <div data-i18n="Layouts">Se connecter</div>
+                  </a>
+                </li>
+              <li class="menu-item {% if registerNav is defined and adminNav %} active {% endif%}">
+                <a href="{{path('app_user_new')}}" class="menu-link">
+                  <i class='menu-icon bx bx-user-plus'></i>
+                  <div data-i18n="Layouts">S'Inscrire</div>
+                </a>
+              </li>
+            </ul>
+
+          {% endif%}
+
+
+</aside>

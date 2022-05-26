@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Traits\TimeStempTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,6 +15,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    use TimeStempTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -33,11 +39,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $adresse;
 
-    #[ORM\Column(type: 'datetime',nullable: true)]
-    private $createAt;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Adhesion::class)]
+    private $adhesions;
 
-    #[ORM\Column(type: 'datetime',nullable: true)]
-    private $updateAt;
+    public function __construct()
+    {
+        $this->adhesions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -157,16 +165,40 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function onPrePersist() {
-        $this->createAt = new \DateTime();
-        $this->updateAt = new \DateTime();
 
+    /**
+     * @return Collection<int, Adhesion>
+     */
+    public function getAdhesions(): Collection
+    {
+        return $this->adhesions;
     }
 
-    #[ORM\PreUpdate]
-    public function onPreUpdate(){
-        $this->updateAt = new \DateTime();
+    public function addAdhesion(Adhesion $adhesion): self
+    {
+        if (!$this->adhesions->contains($adhesion)) {
+            $this->adhesions[] = $adhesion;
+            $adhesion->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdhesion(Adhesion $adhesion): self
+    {
+        if ($this->adhesions->removeElement($adhesion)) {
+            // set the owning side to null (unless already changed)
+            if ($adhesion->getUser() === $this) {
+                $adhesion->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getUsername();
     }
 
 
