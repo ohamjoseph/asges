@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Adhesion;
 use App\Entity\Association;
 use App\Form\AssociationType;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,7 +23,7 @@ class AssociationController extends AbstractController
     }
 
     #[Route('/add', name: 'app_association.add')]
-    public function addPersonne(
+    public function addAssociation(
         ManagerRegistry $doctrine,
         Request         $request,
     ): Response
@@ -37,13 +38,21 @@ class AssociationController extends AbstractController
         if ($form->isSubmitted()) {
             // $form->getData() holds the submitted values
             // but, the original `$task` variable has also been updated
-            $personne = $form->getData();
+            $association = $form->getData();
+            $adhesion = new Adhesion();
+            $adhesion
+                ->setUser($this->getUser())
+                ->setAssociation($association)
+                ->setRole("PRESIDENT");
 
             // ... perform some action, such as saving the task to the database
-            $entityRegister->persist($personne);
+            $entityRegister->persist($association);
+            $adhesionRepo = $doctrine->getRepository(Adhesion::class);
+            $adhesionRepo->add($adhesion);
 
             //excute
             $entityRegister->flush();
+
 //            $mailMessage = $personne->getFirstname() . ' ' . $personne->getLastname() . ' a été ajouté';
 //            $mailerService->sendEmail(content: $mailMessage);
             return $this->redirectToRoute('app_acceuil');
@@ -53,6 +62,13 @@ class AssociationController extends AbstractController
             'association' => $association,
             'form' => $form->createView(),
         ]);
+    }
+    #[Route('/list', name: 'app_association.add' )]
+    public function userAssiationList(): Response{
+
+        return $this->render('association/user_association_list.html.twig',[
+            'associationNav'=>true,
+            ]);
     }
 
 }

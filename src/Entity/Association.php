@@ -3,11 +3,19 @@
 namespace App\Entity;
 
 use App\Repository\AssociationRepository;
+use App\Traits\StatusTrait;
+use App\Traits\TimeStempTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AssociationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Association
 {
+    use TimeStempTrait;
+    use StatusTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -40,8 +48,13 @@ class Association
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $siege;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $status;
+    #[ORM\OneToMany(mappedBy: 'association', targetEntity: Adhesion::class)]
+    private $adhesions;
+
+    public function __construct()
+    {
+        $this->adhesions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -156,15 +169,40 @@ class Association
         return $this;
     }
 
-    public function getStatus(): ?string
+
+    /**
+     * @return Collection<int, Adhesion>
+     */
+    public function getAdhesions(): Collection
     {
-        return $this->status;
+        return $this->adhesions;
     }
 
-    public function setStatus(?string $status): self
+    public function addAdhesion(Adhesion $adhesion): self
     {
-        $this->status = $status;
+        if (!$this->adhesions->contains($adhesion)) {
+            $this->adhesions[] = $adhesion;
+            $adhesion->setAssociation($this);
+        }
 
         return $this;
     }
+
+    public function removeAdhesion(Adhesion $adhesion): self
+    {
+        if ($this->adhesions->removeElement($adhesion)) {
+            // set the owning side to null (unless already changed)
+            if ($adhesion->getAssociation() === $this) {
+                $adhesion->setAssociation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getNom();
+    }
+
 }
