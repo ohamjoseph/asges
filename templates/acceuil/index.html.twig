@@ -38,10 +38,17 @@
                     <a href="{{path('acceuil.ass.detail', {'id':association.id})}}" class="btn btn-primary mx-2">
                         <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Consulter
                     </a>
-                    <a  href="{{path('app_adhesion.add',{'id':association.id})}}" class="btn btn-secondary mx-1">
-                        <span class="tf-icons bx bx-bell"></span>&nbsp; Adherer
-                    </a>
-                    
+                    <button
+                            type="button"
+                            class="btn tt btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalCenter"
+                            id = '{{association}}'
+                            data-entry = '{{association.id}}'
+                    >
+                        <span class="tf-icons bx bx-bell"></span>
+                        Adherer
+                    </button>
                 </div>
             </div>
         </div>
@@ -79,4 +86,58 @@
 {% endif %}
 </div>
 
+
+
+    <!-- Vertically Centered Modal -->
+    <div class="col-lg-4 col-md-6">
+
+        <div class="mt-3">
+            <!-- Modal -->
+            <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalCenterTitle">Adhésion</h5>
+                            <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                    id =
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col">
+                                Voulez vous adhérer à l'association <strong id="ass"></strong> ?
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                Annuler
+                            </button>
+                            <a id = 'btn_ad' href="" class="btn btn-outline-primary">
+                                &nbsp;Adhérer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script>
+        $(".tt").click(function(event) {
+            var ass = (event.target.getAttribute('id'));
+            $( "#ass" ).html(ass);
+
+            var valeur = (event.target.getAttribute('data-entry'));
+            valeur =  parseInt(valeur)
+            url = '{{ path("app_adhesion.add", {'id': 'ass.id'}) }}';
+
+            url = url.replace("ass.id", valeur);
+            $( "#btn_ad" ).attr("href",url);
+
+        });
+    </script>
 {% endblock %}

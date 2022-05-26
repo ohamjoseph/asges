@@ -21,13 +21,17 @@ class AdhesionController extends AbstractController
         ]);
     }
 
-    #[Route('/add/{id}', name: 'app_adhesion.add')]
+    #[Route('/add/{id}',
+        name: 'app_adhesion.add',
+
+    )]
     public function addAdhesion(
         ManagerRegistry $doctrine,
         Association $association,
-        Request $request
+        Request $request,
     ): Response
     {
+
         if(!$association){
             $this->addFlash('error', "Cette associtation n'exite pas");
             return $this->redirectToRoute("app_acceuil");
@@ -41,7 +45,7 @@ class AdhesionController extends AbstractController
             $adhesion->setAssociation($association);
             $adhesion->setUser($user);
             $adhesionRepo->add($adhesion,true);
-            $this->addFlash('success',"Votre adhésion à été effectuer avec success");
+            $this->addFlash('succes',"Votre adhésion à été effectuer avec success");
         }catch (\Exception $e){
             $this->addFlash('success',"Votre adhésion n'a pas été");
         }
