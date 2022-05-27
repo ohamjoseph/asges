@@ -31,6 +31,7 @@ class AssociationController extends AbstractController
         $entityRegister = $doctrine->getManager();
 
         $association = new Association();
+        $association->setNbrAdherant(1);
         $form = $this->createForm(AssociationType::class, $association);
 
         //
@@ -46,6 +47,7 @@ class AssociationController extends AbstractController
                 ->setRole("PRESIDENT");
 
             // ... perform some action, such as saving the task to the database
+
             $entityRegister->persist($association);
             $adhesionRepo = $doctrine->getRepository(Adhesion::class);
             $adhesionRepo->add($adhesion);
@@ -63,13 +65,36 @@ class AssociationController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-    #[Route('/list', name: 'app_association.add' )]
+    #[Route('/list', name: 'app_association.list' )]
     public function userAssiationList(): Response{
+        $user = $this->getUser();
 
         return $this->render('association/user_association_list.html.twig',[
             'associationNav'=>true,
+            'userAssociationNav'=>true,
+            'open'=>true,
             ]);
     }
 
-}
+    #[Route('/detail/{id}', name: 'app_association.detail')]
+    public function detail(ManagerRegistry $doctrine, Association $association)
+    {
+        $userAdhesion = $doctrine->getRepository(Adhesion::class)->userAdhesion($association,$this->getUser());
 
+        $adhesion = $association->getAdhesions();
+
+        if (!$association) {
+            $this->addFlash('error', "Cette associtation n'exite pas");
+            return $this->redirectToRoute("app_association.list");
+        }
+
+
+        return $this->render('association/user_association_detail.html.twig', [
+            'association' => $association,
+            'adhesions' => $adhesion,
+            'userAdhesion'=>$userAdhesion,
+
+        ]);
+    }
+
+}

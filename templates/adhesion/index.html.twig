@@ -1,20 +1,164 @@
-{% extends 'base.html.twig' %}
+{% extends 'theme/base/base_main.html.twig' %}
 
-{% block title %}Hello AdhesionController!{% endblock %}
+{% block title %}Gestion de {{ association }}{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="row">
+        <div class=" col d-flex justify-content-end"><a href="javascript:void(0)" class="btn btn-primary">Ajouter une activité</a></div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    </div>
+    <div class="row">
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'D:/Documents/Cours/Master 1/S2/Projets Tutores/assges/asges/src/Controller/AdhesionController.php'|file_link(0) }}">src/Controller/AdhesionController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'D:/Documents/Cours/Master 1/S2/Projets Tutores/assges/asges/templates/adhesion/index.html.twig'|file_link(0) }}">templates/adhesion/index.html.twig</a></code></li>
-    </ul>
-</div>
+        <div class="accordion mt-3" id="accordionExample">
+            <div class="card accordion-item active">
+                <h2 class="accordion-header" id="headingOne">
+                    <button
+                            type="button"
+                            class="accordion-button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accordionOne"
+                            aria-expanded="true"
+                            aria-controls="accordionOne"
+                    >
+                        Details
+                    </button>
+                </h2>
+
+                <div
+                        id="accordionOne"
+                        class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionExample"
+                >
+                    <div class="accordion-body">
+                        Lemon drops chocolate cake gummies carrot cake chupa chups muffin topping. Sesame snaps icing
+                        marzipan gummi bears macaroon dragée danish caramels powder. Bear claw dragée pastry topping
+                        soufflé. Wafer gummi bears marshmallow pastry pie.
+                    </div>
+                </div>
+            </div>
+            <div class="card accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button
+                            type="button"
+                            class="accordion-button collapsed d-flex justify-content-between"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accordionTwo"
+                            aria-expanded="false"
+                            aria-controls="accordionTwo"
+
+                    >
+
+                            Activités
+                    </button>
+                </h2>
+                <div
+                        id="accordionTwo"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="headingTwo"
+                        data-bs-parent="#accordionExample"
+                >
+                    <div class="accordion-body">
+                        Dessert ice cream donut oat cake jelly-o pie sugar plum cheesecake. Bear claw dragée oat cake
+                        dragée ice cream halvah tootsie roll. Danish cake oat cake pie macaroon tart donut gummies.
+                        Jelly beans candy canes carrot cake. Fruitcake chocolate chupa chups.
+                    </div>
+                </div>
+            </div>
+            <div class="card accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button
+                            type="button"
+                            class="accordion-button collapsed"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#accordionThree"
+                            aria-expanded="false"
+                            aria-controls="accordionThree"
+                    >
+                        Listes des membres
+                    </button>
+                </h2>
+                <div
+                        id="accordionThree"
+                        class="accordion-collapse collapse"
+                        aria-labelledby="headingThree"
+                        data-bs-parent="#accordionExample"
+                >
+                    <div class="accordion-body">
+                        <div class="table-responsive text-nowrap">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Adresse</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody class="table-border-bottom-0">
+                                {% for adhesion in adhesions %}
+                                    {% if adhesion.user != app.user%}
+                                        <tr>
+                                            <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{adhesion.getUser}}</strong></td>
+                                            <td>{{adhesion.getUser.email}}</td>
+                                            <td>{{adhesion.getUser.adresse}}</td>
+                                            <td><span class="badge bg-label-primary me-1">{{ adhesion.role }}</span></td>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="{{path('app_adhesion.detail',{'id':adhesion.id})}}"
+                                                        ><i class="bx bx-edit-alt me-1"></i>Edit</a
+                                                        >
+                                                        <a class="dropdown-item" href="javascript:void(0);"
+                                                        ><i class="bx bx-trash me-1"></i> Delete</a
+                                                        >
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {%endif%}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        {% if isPaginated is defined and isPaginated %}
+            <div class="demo-inline-spacing">
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page!=1 %}
+                            <li class="page-item prev">
+                                <a class="page-link" href="{{path('app_acceuil',{page:page-1})}}"><i class="tf-icon bx bx-chevrons-left"></i></a>
+                            </li>
+                        {% endif %}
+
+                        {% for i in range(1, nbPage) %}
+                            <li class="page-item {%if page==i %} active {% endif %}">
+                                <a class="page-link" href="{{path('app_acceuil',{page:i})}}">{{i}}</a>
+                            </li>
+                        {% endfor %}
+
+                        {% if page!=nbPage %}
+                            <li class="page-item next">
+                                <a class="page-link" href="{{path('app_acceuil',{page:page+1})}}"><i class="tf-icon bx bx-chevrons-right"></i></a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+
+        {% endif %}
+    </div>
+
 {% endblock %}

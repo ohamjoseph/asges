@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Adhesion;
+use App\Entity\Association;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,6 +40,29 @@ class AdhesionRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function userAdhesion(Association $association,User $user):Adhesion
+    {
+        return $this->findOneBy([
+            'user'=>$user,
+            'association'=>$association
+        ]);
+    }
+
+
+//    public function findByExampleField(Association $association, User $): ?Adhesion
+//    {
+//        return $this->createQueryBuilder('a')
+//            ->andWhere('a.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('a.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
+
+
 
 //    /**
 //     * @return Adhesion[] Returns an array of Adhesion objects
