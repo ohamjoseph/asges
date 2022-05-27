@@ -45,9 +45,9 @@ class AdhesionController extends AbstractController
             $adhesion->setAssociation($association);
             $adhesion->setUser($user);
             $adhesionRepo->add($adhesion,true);
-            $this->addFlash('succes',"Votre adhésion à été effectuer avec success");
+            $this->addFlash('succes',"Votre adhésion à l'association $association à été effectuer avec success");
         }catch (\Exception $e){
-            $this->addFlash('success',"Votre adhésion n'a pas été");
+            $this->addFlash('info',"Vous etes membres de l'association $association");
         }
 
         return $this->redirectToRoute('app_acceuil');

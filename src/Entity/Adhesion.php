@@ -7,6 +7,7 @@ use App\Traits\TimeStempTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdhesionRepository::class)]
+#[ORM\UniqueConstraint(name: 'user_association', fields: ["user","association"])]
 #[ORM\HasLifecycleCallbacks]
 class Adhesion
 {
