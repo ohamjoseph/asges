@@ -86,13 +86,10 @@ class AssociationController extends AbstractController
     #[Route('/list/creer', name: 'app_association.list.creer' )]
     public function userAssociationCreer(ManagerRegistry $doctrine): Response{
 
-        $userAdhesions = $doctrine->getRepository(Adhesion::class)->userAdhesionsCreer($this->getUser());
-
-        return $this->render('association/user_association_list.html.twig',[
+        return $this->render('association/user_adhesion_list.html.twig',[
             'associationNav'=>true,
             'userAssociationNavCreer'=>true,
             'open'=>true,
-            'userAdhesions'=>$userAdhesions,
         ]);
     }
 

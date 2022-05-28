@@ -98,7 +98,7 @@
                                 <tbody class="table-border-bottom-0">
                                 {% for adhesion in adhesions %}
                                     {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
-                                        {%include 'theme/include/adhesion_ligne.html.twig' with {'adhesion':adhesion}%}
+                                        {%include 'theme/include/association_ligne.html.twig' with {'adhesion':adhesion}%}
                                     {%endif%}
                                 {% endfor %}
                                 </tbody>

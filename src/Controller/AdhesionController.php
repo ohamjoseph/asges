@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Adhesion;
 use App\Entity\Association;
+use App\Entity\User;
 use App\Service\MailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -144,6 +145,17 @@ class AdhesionController extends AbstractController
         }
 
         return $this->redirectToRoute('app_acceuil');
+    }
+
+    #[Route('/email/{as}/{ad}',
+        name: 'app_adhesion.mail',
+    )]
+    public function envoiMail(
+        ManagerRegistry $doctrine,
+        Request $request,
+    ): Response
+    {
+        return $this->render('adhesion/email.html.twig');
     }
 
 
