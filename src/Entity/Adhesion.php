@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\AdhesionRepository;
+use App\Traits\StatusTrait;
 use App\Traits\TimeStempTrait;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,6 +14,7 @@ class Adhesion
 {
 
     use TimeStempTrait;
+    use StatusTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

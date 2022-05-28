@@ -7,13 +7,24 @@ use App\Entity\Association;
 use App\Service\MailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
+
 #[Route('/adhesion')]
 class AdhesionController extends AbstractController
 {
+
+    private $status = array(
+        'active'=> 'ACTIVE',
+        'suspendus'=> 'SUSPENDUS',
+        'bannis'=> 'BANNIS',
+        'creer'=> 'CREER'
+    );
+
     #[Route('/association/{id}', name: 'app_adhesion')]
     public function index(Association $association): Response
     {
@@ -63,11 +74,40 @@ class AdhesionController extends AbstractController
         $mailer->sendEmail(to: $user->getEmail(),subject: 'Editeur',content: $message);
 
 
-        return $this->render('adhesion/association_user_adhesion_detail.html.twig',[
-            'adhesion'=>$adhesion,
-            'userAdhesion'=>$userAdhesion,
+        return $this->redirectToRoute('app_adhesion.detail',[
+            'id'=>$adhesion->getId(),
         ]);
 
+    }
+
+    #[Route('/response/{id}/{status}', name: 'app_adhesion.response')]
+    public function acceptAdhesion(
+        ManagerRegistry $doctrine,
+        Adhesion $adhesion,
+        $status,
+        MailerService $mailerService
+    ): RedirectResponse
+    {
+
+        $adhesion->setStatus($this->status[$status]);
+        $doctrine->getRepository(Adhesion::class)->add($adhesion,true);
+        $subject = "Votre status dans l'association ".$adhesion->getAssociation();
+        $message = "Chèr.e ".$adhesion->getUser();
+        if ($status == 'active'){
+            $this->addFlash('succes',$adhesion->getUser()." a été accepter dans l'association ");
+            $message = $message. ", Votre demande d'adhèsion à l'association ".$adhesion->getAssociation()." a été accepter";
+
+        }else{
+            $this->addFlash('info',$adhesion->getUser()." a été ".$status." de l'association ");
+            $message = $message. ", vous avez été $status de l'association ".$adhesion->getAssociation();
+        }
+
+        $mailerService->sendEmail(to:$adhesion->getUser()->getEmail(),subject: $subject,content: $message);
+
+
+        return $this->redirectToRoute('app_adhesion.detail',[
+            'id'=>$adhesion->getId(),
+        ]);
     }
 
     #[Route('/add/{id}',
@@ -85,7 +125,6 @@ class AdhesionController extends AbstractController
             return $this->redirectToRoute("app_acceuil");
         }
         $adhesionRepo = $doctrine->getRepository(Adhesion::class);
-        $associationRepo = $doctrine->getRepository(Association::class);
         $user = $this->getUser();
 
         try {

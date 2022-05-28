@@ -5,12 +5,12 @@
 {% block body %}
     <div class="row">
 
-        {%if userAdhesion.role is defined %}
-        <div class=" mb-3 d-flex justify-content-end">
-            <a href="{{path('app_adhesion',{'id':association.id})}}" class="btn btn-primary m-0">
-                <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Gestion de l'association
-            </a>
-        </div>
+        {%if userAdhesion.role is defined and userAdhesion.role is not null %}
+            <div class=" mb-3 d-flex justify-content-end">
+                <a href="{{path('app_adhesion',{'id':association.id})}}" class="btn btn-primary m-0">
+                    <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Gestion de l'association
+                </a>
+            </div>
         {% endif %}
     </div>
     <div class="row">

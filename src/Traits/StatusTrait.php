@@ -23,6 +23,8 @@ trait StatusTrait
 
     #[ORM\PrePersist]
     public function PreStatus(){
-        $this->status = 'CREER';
+        if ( is_null($this->status)){
+            $this->status = 'CREER';
+        }
     }
 }

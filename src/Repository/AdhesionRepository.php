@@ -41,7 +41,14 @@ class AdhesionRepository extends ServiceEntityRepository
         }
     }
 
-    public function userAdhesion(Association $association,User $user):Adhesion
+    /* Recupération de l'adhesion associer a un utilisateur et une association donnée */
+    /**
+     * @param Association $association
+     * @param User $user
+     * @return Adhesion
+     *
+     */
+    public function userAdhesion(Association $association, User $user):Adhesion
     {
         return $this->findOneBy([
             'user'=>$user,
@@ -49,6 +56,34 @@ class AdhesionRepository extends ServiceEntityRepository
         ]);
     }
 
+
+    /**
+     * @param User $user
+     * @return Adhesion[]
+     */
+    public function userAdhesions(User $user):array
+    {
+        return $this->findBy([
+            'user'=>$user,
+            'status'=>'ACTIVE'
+        ]);
+    }
+
+    public function userAdhesionsSuppend(User $user):array
+    {
+        return $this->findBy([
+            'user'=>$user,
+            'status'=>'SUSPENDUS'
+        ]);
+    }
+
+    public function userAdhesionsCreer(User $user):array
+    {
+        return $this->findBy([
+            'user'=>$user,
+            'status'=>'CREER'
+        ]);
+    }
 
 //    public function findByExampleField(Association $association, User $): ?Adhesion
 //    {

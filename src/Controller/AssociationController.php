@@ -44,13 +44,18 @@ class AssociationController extends AbstractController
             $adhesion
                 ->setUser($this->getUser())
                 ->setAssociation($association)
-                ->setRole("PRESIDENT");
+                ->setRole("PRESIDENT")
+                ->setStatus('ACTIVE')
+
+            ;
 
             // ... perform some action, such as saving the task to the database
 
             $entityRegister->persist($association);
             $adhesionRepo = $doctrine->getRepository(Adhesion::class);
             $adhesionRepo->add($adhesion);
+
+
 
             //excute
             $entityRegister->flush();
@@ -66,14 +71,29 @@ class AssociationController extends AbstractController
         ]);
     }
     #[Route('/list', name: 'app_association.list' )]
-    public function userAssiationList(): Response{
-        $user = $this->getUser();
+    public function userAssociationList(ManagerRegistry $doctrine): Response{
+
+        $userAdhesions = $doctrine->getRepository(Adhesion::class)->userAdhesions($this->getUser());
 
         return $this->render('association/user_association_list.html.twig',[
             'associationNav'=>true,
             'userAssociationNav'=>true,
             'open'=>true,
+            'userAdhesions'=>$userAdhesions,
             ]);
+    }
+
+    #[Route('/list/creer', name: 'app_association.list.creer' )]
+    public function userAssociationCreer(ManagerRegistry $doctrine): Response{
+
+        $userAdhesions = $doctrine->getRepository(Adhesion::class)->userAdhesionsCreer($this->getUser());
+
+        return $this->render('association/user_association_list.html.twig',[
+            'associationNav'=>true,
+            'userAssociationNavCreer'=>true,
+            'open'=>true,
+            'userAdhesions'=>$userAdhesions,
+        ]);
     }
 
     #[Route('/detail/{id}', name: 'app_association.detail')]

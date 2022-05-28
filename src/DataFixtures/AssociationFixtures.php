@@ -2,8 +2,6 @@
 
 namespace App\DataFixtures;
 
-require_once 'vendor/autoload.php';
-
 use App\Entity\Association;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
