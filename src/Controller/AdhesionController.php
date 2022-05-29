@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Adhesion;
 use App\Entity\Association;
+use App\Entity\Mail;
 use App\Entity\User;
+use App\Form\MailType;
 use App\Service\MailerService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -147,15 +149,44 @@ class AdhesionController extends AbstractController
         return $this->redirectToRoute('app_acceuil');
     }
 
-    #[Route('/email/{as}/{ad}',
+    #[Route('/email/{id}',
         name: 'app_adhesion.mail',
     )]
     public function envoiMail(
         ManagerRegistry $doctrine,
+        Adhesion $adhesion,
         Request $request,
+        MailerService $mailerService
     ): Response
     {
-        return $this->render('adhesion/email.html.twig');
+        $mail = new Mail();
+        $form = $this->createForm(MailType::class,$mail);
+
+        $mailRepo = $doctrine->getRepository(Mail::class);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted()){
+            $mail = $form->getData();
+            $mail->setUser($adhesion->getUser());
+            $mail->setAssociation($adhesion->getAssociation());
+            $mailRepo->add($mail);
+            $mailerService->sendEmail(
+                to:$adhesion->getUser()->getEmail(),
+                subject: $mail->getSubject(),
+                content: $mail->getMessage()
+            );
+
+            $this->addFlash('succes','Le mail a envoyer avec succes');
+            return $this->redirectToRoute('app_adhesion',[
+                'id'=>$adhesion->getAssociation()->getId(),
+            ]);
+        }
+
+
+        return $this->render('adhesion/email.html.twig',[
+            'form'=>$form->createView(),
+            'adhesion'=>$adhesion,
+        ]);
     }
 
 

@@ -51,9 +51,13 @@ class Association
     #[ORM\OneToMany(mappedBy: 'association', targetEntity: Adhesion::class)]
     private $adhesions;
 
+    #[ORM\OneToMany(mappedBy: 'association', targetEntity: Mail::class)]
+    private $mails;
+
     public function __construct()
     {
         $this->adhesions = new ArrayCollection();
+        $this->mails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -203,6 +207,36 @@ class Association
     public function __toString(): string
     {
         return $this->getNom();
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getMails(): Collection
+    {
+        return $this->mails;
+    }
+
+    public function addMail(Mail $mail): self
+    {
+        if (!$this->mails->contains($mail)) {
+            $this->mails[] = $mail;
+            $mail->setAssociation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMail(Mail $mail): self
+    {
+        if ($this->mails->removeElement($mail)) {
+            // set the owning side to null (unless already changed)
+            if ($mail->getAssociation() === $this) {
+                $mail->setAssociation(null);
+            }
+        }
+
+        return $this;
     }
 
 }

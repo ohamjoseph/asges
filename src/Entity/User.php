@@ -42,9 +42,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Adhesion::class)]
     private $adhesions;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Mail::class)]
+    private $mails;
+
     public function __construct()
     {
         $this->adhesions = new ArrayCollection();
+        $this->mails = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -199,6 +203,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString(): string
     {
         return $this->getUsername();
+    }
+
+    /**
+     * @return Collection<int, Mail>
+     */
+    public function getMails(): Collection
+    {
+        return $this->mails;
+    }
+
+    public function addMail(Mail $mail): self
+    {
+        if (!$this->mails->contains($mail)) {
+            $this->mails[] = $mail;
+            $mail->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMail(Mail $mail): self
+    {
+        if ($this->mails->removeElement($mail)) {
+            // set the owning side to null (unless already changed)
+            if ($mail->getUser() === $this) {
+                $mail->setUser(null);
+            }
+        }
+
+        return $this;
     }
 
 
