@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Mail;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +15,7 @@ class MailType extends AbstractType
         $builder
             ->add('subject')
             ->add('message')
-        ;
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

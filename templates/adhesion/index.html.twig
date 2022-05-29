@@ -4,7 +4,11 @@
 
 {% block body %}
     <div class="row">
-        <div class=" col d-flex justify-content-end"><a href="javascript:void(0)" class="btn btn-primary">Ajouter une activité</a></div>
+
+        <div class=" col d-flex justify-content-end">
+            <a href="{{path('app_adhesion.mail',{'id':association.adhesions.last.id,'pub':true})}}" class="btn btn-success me-2">Envoyer un publipostage</a>
+            <a href="javascript:void(0)" class="btn btn-primary">Ajouter une activité</a>
+        </div>
 
     </div>
     <div class="row">

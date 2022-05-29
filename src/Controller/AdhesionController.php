@@ -28,6 +28,7 @@ class AdhesionController extends AbstractController
         'creer'=> 'CREER'
     );
 
+
     #[Route('/association/{id}', name: 'app_adhesion')]
     public function index(Association $association): Response
     {
@@ -149,13 +150,17 @@ class AdhesionController extends AbstractController
         return $this->redirectToRoute('app_acceuil');
     }
 
-    #[Route('/email/{id}',
+    #[Route('/email/{id}/{pub}',
         name: 'app_adhesion.mail',
+        defaults: [
+            'pub'=>false,
+        ]
     )]
     public function envoiMail(
         ManagerRegistry $doctrine,
         Adhesion $adhesion,
         Request $request,
+        $pub,
         MailerService $mailerService
     ): Response
     {
@@ -165,18 +170,54 @@ class AdhesionController extends AbstractController
         $mailRepo = $doctrine->getRepository(Mail::class);
 
         $form->handleRequest($request);
-        if($form->isSubmitted()){
-            $mail = $form->getData();
-            $mail->setUser($adhesion->getUser());
-            $mail->setAssociation($adhesion->getAssociation());
-            $mailRepo->add($mail);
-            $mailerService->sendEmail(
-                to:$adhesion->getUser()->getEmail(),
-                subject: $mail->getSubject(),
-                content: $mail->getMessage()
-            );
 
-            $this->addFlash('succes','Le mail a envoyer avec succes');
+
+        if($form->isSubmitted()){
+
+            $mail = $form->getData();
+            if($pub){
+                // Recupperations de touts les elements envoyer dans le  resquest
+                $checkbox = array_keys($request->request->all());
+
+                // Recuperations des options
+                $options = [];
+                foreach ($checkbox as $option){
+                    if (str_contains($option,'option')) {
+                        array_push($options,$option);
+                    }
+                }
+                $repoAdh = $doctrine->getRepository(Adhesion::class);
+
+                //Recupérations des Adhesions
+
+                foreach ($options as $id){
+                    $adhesion = $repoAdh->find($request->request->get($id));
+                    $mail->setUser($adhesion->getUser());
+                    $mail->setAssociation($adhesion->getAssociation());
+                    $mailRepo->add($mail);
+                    $mailerService->sendEmail(
+                        to:$adhesion->getUser()->getEmail(),
+                        subject: $mail->getSubject(),
+                        content: $adhesion->getUser().',<br><br>'.$mail->getMessage()
+                    );
+                }
+                $this->addFlash('succes','Votre publipostage  a été envoyer avec succes');
+            }else{
+                $mail->setUser($adhesion->getUser());
+                $mail->setAssociation($adhesion->getAssociation());
+                $mailRepo->add($mail);
+                $mailerService->sendEmail(
+                    to:$adhesion->getUser()->getEmail(),
+                    subject: $mail->getSubject(),
+                    content: $adhesion->getUser().',<br><br>'.$mail->getMessage()
+                );
+                $this->addFlash('succes','Le mail a envoyer avec succes');
+            }
+
+
+
+
+
             return $this->redirectToRoute('app_adhesion',[
                 'id'=>$adhesion->getAssociation()->getId(),
             ]);
@@ -186,6 +227,8 @@ class AdhesionController extends AbstractController
         return $this->render('adhesion/email.html.twig',[
             'form'=>$form->createView(),
             'adhesion'=>$adhesion,
+            'adhesions'=>$adhesion->getAssociation()->getAdhesions(),
+            'pub' => $pub,
         ]);
     }
 

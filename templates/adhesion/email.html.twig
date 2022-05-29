@@ -11,10 +11,62 @@
             </div>
             <!-- /Logo -->
             <!--Form-->
-            <dt class="my-3 h5">
-                À: {{adhesion.user.email}}, <span class="text-muted">{{adhesion.user}}</span>
-            </dt>
+
+
             <form method="post">
+                {%if not pub %}
+                    <dt class="my-3 h5">
+                        À: {{adhesion.user.email}}, <span class="text-muted">{{adhesion.user}}</span>
+                    </dt>
+                {%else%}
+                    <div class="accordion my-3" id="accordionExample">
+                        <div class="card accordion-item active">
+                            <h2 class="accordion-header" id="headingThree">
+                                <button
+                                        type="button"
+                                        class="accordion-button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#accordionThree"
+                                        aria-expanded="true"
+                                        aria-controls="accordionThree"
+                                >
+                                    Listes des membres
+                                </button>
+                            </h2>
+                            <div
+                                    id="accordionThree"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingThree"
+                                    data-bs-parent="#accordionExample"
+                            >
+                                <div class="accordion-body">
+                                    <div class="table-responsive text-nowrap">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Username</th>
+                                                <th>Email</th>
+                                                <th>Adresse</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="table-border-bottom-0">
+                                            {% for adhesion in adhesions %}
+                                                {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
+
+                                                    {%include 'theme/include/association_ligne2.html.twig' with {'adhesion':adhesion}%}
+                                                {%endif%}
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {%endif%}
+
+
             {% for child in form %}
             <div class="">
 
