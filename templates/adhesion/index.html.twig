@@ -3,9 +3,25 @@
 {% block title %}Gestion de {{ association }}{% endblock %}
 
 {% block body %}
+
+{#        {%if app.session.get('notFlush') is defined and not app.session.get('notFlush') %}#}
+{#            <div class="alert alert-warning alert-dismissible fade show" role="alert">#}
+{#                <ul>#}
+{#                {% for u in app.session.get('notFlush') %}#}
+{#                    <li>#}
+{#                        {{u}}#}
+{#                    </li>#}
+{#                {%endfor%}#}
+{#                </ul>#}
+{#            </div>#}
+{#        {% endif %}#}
     <div class="row">
 
         <div class=" col d-flex justify-content-end">
+            <button  class="btn btn-warning me-2" data-bs-toggle="modal"
+               data-bs-target="#modalCenter">
+                Importer des Adhérants
+            </button>
             <a href="{{path('app_adhesion.mail',{'id':association.adhesions.last.id,'pub':true})}}" class="btn btn-success me-2">Envoyer un publipostage</a>
             <a href="javascript:void(0)" class="btn btn-primary">Ajouter une activité</a>
         </div>
@@ -143,6 +159,48 @@
             </div>
 
         {% endif %}
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <div class="mt-3">
+            <!-- Modal -->
+            <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+                            <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form method="POST" action="{{path('xlsx',{'id':association.id})}} " enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label for="formFile" class="form-label">Default file input example</label>
+                                    <input class="form-control" name="xlsx" type="file" id="formFile" required/>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">Importer</button>
+                                </div>
+                                <input type="text" name="cc" class="form-control">
+
+                                <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

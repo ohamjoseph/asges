@@ -8,14 +8,17 @@ use App\Entity\Mail;
 use App\Entity\User;
 use App\Form\MailType;
 use App\Service\MailerService;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 #[Route('/adhesion')]
 class AdhesionController extends AbstractController
@@ -28,17 +31,28 @@ class AdhesionController extends AbstractController
         'creer'=> 'CREER'
     );
 
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    )
+    {
+    }
+
 
     #[Route('/association/{id}', name: 'app_adhesion')]
-    public function index(Association $association): Response
+    public function index(Association $association, Request $request): Response
     {
         $adhesions = $association->getAdhesions();
-
+        try {
+            $notFlush = $request->request->get('notFlush');
+        }catch (\Exception $e){
+            $notFlush = null;
+        }
 
 
         return $this->render('adhesion/index.html.twig', [
             'adhesions' => $adhesions,
             'association'=>$association,
+            'notFlush' => $notFlush
         ]);
     }
 
@@ -232,5 +246,80 @@ class AdhesionController extends AbstractController
         ]);
     }
 
+
+
+    #[Route('import/{id}',name: 'xlsx')]
+    public function importAdhesion(Request $request,
+                                   Association $association,
+                                   ManagerRegistry $doctrine,
+                                   MailerService $mailerService
+    ): Response
+    {
+
+        $file = $request->files->get('xlsx'); // get the file from the sent request
+        $fileFolder = __DIR__ . '/../../public/uploads/';  //choose the folder in which the uploaded file will be stored
+
+        $filePathName = md5(uniqid()) . $file->getClientOriginalName();
+        // apply md5 function to generate an unique identifier for the file and concat it with the file extension
+        try {
+            $file->move($fileFolder, $filePathName);
+        } catch (FileException $e) {
+            dd($e);
+        }
+        $spreadsheet = IOFactory::load($fileFolder . $filePathName); // Here we are able to read from the excel file
+        $row = $spreadsheet->getActiveSheet()->removeRow(1); // I added this to be able to remove the first file line
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
+
+        $userRepo = $doctrine->getManager();
+        $adhesionRepo = $doctrine->getManager();
+
+
+        foreach ($sheetData as $data){
+
+            try {
+                $user = new User();
+
+                $username = $data['A'];
+                $mail = $data['B'];
+                $adresse = $data['C'];
+
+                $mp = uniqid();
+                $user->setUsername($username)
+                    ->setEmail($mail)
+                    ->setAdresse($adresse)
+                    ->setPassword($this->hasher->hashPassword($user, $mp ))
+                ;
+
+                $userRepo->persist($user);
+                $userRepo->flush();
+
+                $adhesion = new Adhesion();
+                $adhesion->setAssociation($association);
+                $adhesion->setUser($user)->setStatus($this->status['active']);
+                $adhesionRepo->persist($adhesion);
+                $adhesionRepo->flush();
+
+                $subject = "Adhesion a l'association $association";
+                $this->addFlash('succes','Ok');
+
+                //Envoi de mail
+                $message = "$username, <br><br>Vous avez été integré dans l'association $association<br><br>
+            Vos identifiants:<br><br>
+            usernane : $username<br><br>
+            mot de passe: $mp";
+
+                $mailerService->sendEmail(to: $mail,subject: $subject,content: $message);
+            }
+            catch (\Exception $e) {
+                $this->addFlash('info',$user.' existe deja dans la base de données ');
+            }
+
+        }
+
+        return $this->redirectToRoute('app_adhesion',[
+            'id'=>$association->getId(),
+
+        ]);
+    }
 
 }
