@@ -1,0 +1,73 @@
+{% extends 'theme/base/base_main.html.twig' %}
+
+{% block title %}Ajouter une activité{% endblock %}
+
+{% block body %}
+
+    <div class="card">
+        <div class="card-body">
+            <!-- Logo -->
+            <div class="app-brand justify-content-center">
+
+            </div>
+            <!-- /Logo -->
+            <!--Form-->
+            <h1>Créer une activité</h1>
+
+            {{form_start(form)}}
+
+            <div class="form-group row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        {{ form_label(form.titre,null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{form_widget(form.titre, {'attr':{'class':'form-control'}})}}
+                    </div>
+                </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {{ form_label(form.dateDebut,null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{form_widget(form.dateDebut, {'attr':{'class':'form-control'}})}}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {{ form_label(form.dateFin,null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{form_widget(form.dateFin, {'attr':{'class':'form-control'}})}}
+                        </div>
+
+                </div>
+                <div class="col-12">
+                    <div class="mb-3">
+                        {{ form_label(form.Description,null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{form_widget(form.Description, {'attr':{'class':'form-control'}})}}
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="mb-3">
+                        {{ form_label(form.brochure,null, {'label_attr': {'class': 'form-label'}}) }}
+                        {{form_widget(form.brochure, {'attr':{'class':'form-control'}})}}
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary d-grid w-20">{{ button_label|default('Enregistrer') }}</button>
+            </div>
+
+            {{form_end(form)}}
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+    <script>
+        $(document).ready(function() {
+            // you may need to change this code if you are not using Bootstrap Datepicker
+            $('.js-datepicker').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+        });
+    </script>
+
+{% endblock %}
