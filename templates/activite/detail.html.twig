@@ -1,0 +1,134 @@
+{% extends 'theme/base/base_main.html.twig' %}
+
+{% block title %}Ajouter une activité{% endblock %}
+
+{% block body %}
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-3">
+                <img class="card-img-top" src="{{asset('/uploads/flyers/')}}{{activite.image}}" alt="Card image cap" />
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{activite.titre}}</h5>
+                    <p class="card-text">
+                        {{activite.titre}}
+                    </p>
+                    <dt class="my-2">
+                        Du {{activite.dateDebut|format_datetime('short','none')}} au {{activite.dateFin|format_datetime('short','none')}}
+                    </dt>
+                </div>
+            </div>
+            <div class="col-md-1 text-end p-2">
+
+                <span class="badge bg-{%if activite.status=='ACTIVE'%}success{%elseif activite.status=='ANNULER'%}danger{%elseif activite.status=='SUSPENDUS'%}warnig{%elseif activite.status=='TERMINER'%}primary{%endif%}">
+                    {{activite.status}}</span>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="my-2 d-flex justify-content-end ">
+                <a href="{{path('app_adhesion',{'id':userAdhesion.association.id})}}" class="btn btn-outline-secondary mx-2">Retour</a>
+
+                {% if userAdhesion.role == 'PRESIDENT' or userAdhesion.role == 'EDITEUR'%}
+
+                    {% if activite.status == 'ACTIVE' %}
+                        <a href="{{path('app_activite.status', {'id':activite.id,'status':'terminer'})}}" class="btn btn-primary mx-2">TERMINER</a>
+                        <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>
+                        <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>
+                    {%elseif activite.status != 'TERMINER'%}
+                        {% if activite.status != 'ANNULER'%}
+                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>
+                            {% if activite.status == 'SUSPENDUS' %}
+                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>
+                            {%else%}
+                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>
+                            {% endif %}
+                        {%else%}
+
+                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>
+
+                        {% endif%}
+
+                    {%endif%}
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-6 h3">
+            Commentaires
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button  class="btn btn-warning me-2" data-bs-toggle="modal"
+                     data-bs-target="#modalCenter"
+                    {%if activite.status!='ACTIVE'%}
+                        disabled
+                    {%endif%}
+            >
+                Commenter
+            </button>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        {% for comment in activite.getCommentaires%}
+            <div class="col-md-6 mb-2">
+                <div class="card bg-secondary text-white text-center p-3">
+                    <figure class="mb-0">
+                        <blockquote class="blockquote">
+                            <p>{{comment.commentaire}}</p>
+                        </blockquote>
+                        <figcaption class="blockquote-footer mb-0 text-white">
+                            Le {{comment.createAt|format_datetime('short',)}} <cite title="Source Title">par {{ comment.user }}</cite>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        {%endfor%}
+    </div>
+
+
+
+    <div class="col-lg-4 col-md-6">
+        <div class="mt-3">
+            <!-- Modal -->
+            <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalCenterTitle">Commentaires</h5>
+                            <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                            ></button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form method="POST" action="{{path('app_comment',{'id':activite.id})}}" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <textarea class="form-control" name="comment" id="" cols="30" rows="5" required></textarea>
+                                </div>
+
+                                <div class="modal-footer container-fluid">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">Commenter</button>
+                                </div>
+                                <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
+                            </form>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

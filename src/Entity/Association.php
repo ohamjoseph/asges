@@ -54,10 +54,14 @@ class Association
     #[ORM\OneToMany(mappedBy: 'association', targetEntity: Mail::class)]
     private $mails;
 
+    #[ORM\OneToMany(mappedBy: 'association', targetEntity: Activite::class)]
+    private $activites;
+
     public function __construct()
     {
         $this->adhesions = new ArrayCollection();
         $this->mails = new ArrayCollection();
+        $this->activites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,6 +237,36 @@ class Association
             // set the owning side to null (unless already changed)
             if ($mail->getAssociation() === $this) {
                 $mail->setAssociation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Activite>
+     */
+    public function getActivites(): Collection
+    {
+        return $this->activites;
+    }
+
+    public function addActivite(Activite $activite): self
+    {
+        if (!$this->activites->contains($activite)) {
+            $this->activites[] = $activite;
+            $activite->setAssociation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivite(Activite $activite): self
+    {
+        if ($this->activites->removeElement($activite)) {
+            // set the owning side to null (unless already changed)
+            if ($activite->getAssociation() === $this) {
+                $activite->setAssociation(null);
             }
         }
 

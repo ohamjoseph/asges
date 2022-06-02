@@ -59,7 +59,11 @@ class AdhesionController extends AbstractController
     #[Route('/detail/{id}',name: 'app_adhesion.detail')]
     public function adhesionDetail(Adhesion $adhesion, ManagerRegistry $doctrine):Response
     {
-        $userAdhesion = $doctrine->getRepository(Adhesion::class)->userAdhesion($adhesion->getAssociation(),$this->getUser());
+        $userAdhesion = $doctrine->getRepository(Adhesion::class)
+            ->userAdhesion(
+                $adhesion->getAssociation(),
+                $this->getUser()
+            );
         return $this->render('adhesion/association_user_adhesion_detail.html.twig',[
             'adhesion'=>$adhesion,
             'userAdhesion'=>$userAdhesion,

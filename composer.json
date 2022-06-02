@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.6",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
+        "easycorp/easyadmin-bundle": "^4.2",
         "fzaninotto/faker": "^1.5",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpoffice/phpspreadsheet": "^1.23",
@@ -44,6 +45,7 @@
         "symfony/web-link": "6.0.*",
         "symfony/yaml": "6.0.*",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/intl-extra": "^3.4",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {

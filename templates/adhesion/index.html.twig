@@ -17,13 +17,13 @@
 {#        {% endif %}#}
     <div class="row">
 
-        <div class=" col d-flex justify-content-end">
+        <div class="col d-flex justify-content-end">
             <button  class="btn btn-warning me-2" data-bs-toggle="modal"
                data-bs-target="#modalCenter">
                 Importer des Adhérants
             </button>
             <a href="{{path('app_adhesion.mail',{'id':association.adhesions.last.id,'pub':true})}}" class="btn btn-success me-2">Envoyer un publipostage</a>
-            <a href="javascript:void(0)" class="btn btn-primary">Ajouter une activité</a>
+            <a href="{{path('app_activite',{'id':association.id})}}" class="btn btn-primary">Ajouter une activité</a>
         </div>
 
     </div>
@@ -65,9 +65,7 @@
                             data-bs-target="#accordionTwo"
                             aria-expanded="false"
                             aria-controls="accordionTwo"
-
                     >
-
                             Activités
                     </button>
                 </h2>
@@ -78,9 +76,27 @@
                         data-bs-parent="#accordionExample"
                 >
                     <div class="accordion-body">
-                        Dessert ice cream donut oat cake jelly-o pie sugar plum cheesecake. Bear claw dragée oat cake
-                        dragée ice cream halvah tootsie roll. Danish cake oat cake pie macaroon tart donut gummies.
-                        Jelly beans candy canes carrot cake. Fruitcake chocolate chupa chups.
+                        <div class="row mb-5">
+                            {%for activite in association.getActivites%}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100">
+                                    <img class="card-img-top" src="{{asset('/uploads/flyers/')}}{{activite.image}}" alt="Card image cap" />
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{activite.titre}}</h5>
+                                        <p class="card-text">
+                                            {{activite.description}}
+                                        </p>
+                                        <dt class="my-2">
+                                            Du {{activite.dateDebut|format_datetime('short','none')}} au {{activite.dateFin|format_datetime('short','none')}}
+                                        </dt>
+                                        <a href="{{path('app_activite.detail',{'id':activite.id})}}" class="btn btn-outline-primary">Plus</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
                     </div>
                 </div>
             </div>

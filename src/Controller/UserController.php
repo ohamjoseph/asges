@@ -39,7 +39,7 @@ class UserController extends AbstractController
             $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
             $userRepository->add($user, true);
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_acceuil', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('user/new.html.twig', [
