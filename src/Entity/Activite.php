@@ -14,7 +14,7 @@ class Activite
 {
 
     use TimeStempTrait;
-    use StatusTrait;
+    use StatusActiviteTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
