@@ -70,6 +70,7 @@ class AssociationController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/list', name: 'app_association.list' )]
     public function userAssociationList(ManagerRegistry $doctrine): Response{
 

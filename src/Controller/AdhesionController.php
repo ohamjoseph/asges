@@ -250,8 +250,6 @@ class AdhesionController extends AbstractController
         ]);
     }
 
-
-
     #[Route('import/{id}',name: 'xlsx')]
     public function importAdhesion(Request $request,
                                    Association $association,

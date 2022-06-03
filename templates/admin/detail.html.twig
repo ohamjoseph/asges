@@ -1,0 +1,76 @@
+{% extends 'theme/base/base_main.html.twig' %}
+
+{% block title %}Liste des associations{% endblock %}
+
+{% block body %}
+    <h4 class="fw-bold py-3 mb-4">
+        <a href="{{path('app_admin.list') }}"><span class="text-muted fw-light">{{association}} /</span></a> Details
+    </h4>
+    <div class="row">
+        <div class="col-md">
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-3">
+                        <img class="card-img card-img-left" src="../assets/img/elements/12.jpg" alt="Card image">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <h5 class="card-title">{{association.nom}}</h5>
+                            <p class="card-text">
+                                <dt>
+                                    {{association.objectif}}
+                                </dt>
+                                <dd>
+                                    {{association.description}}
+                                </dd>
+                            </p>
+                            <p class="card-text"><small class="text-muted">Créer le {{association.createAt|date('d/m/Y')}}</small></p>
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-end p-2">
+                        <span class="badge bg-{%if association.status=='ACCEPTER'%}success{%elseif association.status=='SUPPRIMER'%}danger{%elseif association.status=='SUSPENDUS'%}warning{%elseif association.status=='REJETER'%}primary{%endif%}">
+                            {{association.status}}
+                        </span>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row">
+                    <div class="my-2 d-flex justify-content-end ">
+                        <a href="{{path('app_admin')}}" class="btn btn-outline-secondary mx-2">Retour</a>
+
+                        {% if association.status == 'CREER' %}
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'accepter'})}}" class="btn btn-success mx-2">Accepter</a>
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'rejeter'})}}" class="btn btn-danger mx-2">Rejeter</a>
+                        {%elseif association.status == 'ACCEPTER'%}
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Suprimer</a>
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>
+                        {%elseif association.status == 'SUSPENDUS'%}
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'reactiver'})}}" class="btn btn-secondary mx-2">Reactiver</a>
+                            <a href="{{path('app_admin.response', {'id':association.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Suprimer</a>
+
+
+
+                            {#                            {% if association.status != 'ANNULER'%}#}
+{#                                <a href="{{path('app_admin.response', {'id':association.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>#}
+{#                                {% if association.status == 'SUSPENDUS' %}#}
+{#                                    <a href="{{path('app_admin.response', {'id':association.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
+{#                                {%else%}#}
+{#                                    <a href="{{path('app_admin.response', {'id':association.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>#}
+{#                                {% endif %}#}
+{#                            {%else%}#}
+{#                                <a href="{{path('app_admin.response', {'id':association.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
+{#                            {% endif%}#}
+
+                        {%endif%}
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}

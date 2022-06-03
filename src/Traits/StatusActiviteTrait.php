@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Doctrine\ORM\Mapping as ORM;
 
-trait StatusTrait
+trait StatusActiviteTrait
 {
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $status;

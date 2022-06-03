@@ -1,0 +1,31 @@
+<tr>
+    <td><i class="fab fa-angular fa-lg text-danger me-3"></i> <strong>{{association}}</strong></td>
+    <td>{{association.objectif}}</td>
+    <td>{{association.noRecipice}}</td>
+
+    <td>
+        {{ association.createAt|date('d/m/Y') }}
+    </td>
+
+    <td>
+        <span class="badge bg-label-{% if association.status == 'CREER'%}primary{%elseif association.status == 'ACCEPTER'%}success{%elseif association.status == 'SUSPENDUS'%}warning{%elseif association.status == 'SUPPRIMER'%}danger{%elseif association.status == 'REJETER'%}danger{%endif%} me-1">
+            {{ association.status }}
+        </span>
+    </td>
+
+    <td>
+        <div class="dropdown">
+            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{path('app_admin.list.detail',{'id':association.id})}}"
+                ><i class="bx bx-edit-alt me-1"></i>Voir</a
+                >
+                <a class="dropdown-item" href=""
+                ><i class='bx bx-mail-send me-1'></i>Envoyer un mail</a
+                >
+            </div>
+        </div>
+    </td>
+</tr>
