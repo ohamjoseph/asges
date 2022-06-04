@@ -115,48 +115,59 @@
                     </li>
                   </ul>
                 </li> -->
-                <!-- Components -->
-                <li class="menu-header small text-uppercase"><span class="menu-header-text">Gestions de l'association</span></li>
-                <!-- Cards -->
-                <!-- <li class="menu-item">
-                  <a href="cards-basic.html" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-collection"></i>
-                    <div data-i18n="Basic">Cards</div>
-                  </a>
-                </li> -->
-                <!-- User interface -->
-                <li class="menu-item {% if editNav is defined and editNav %} active {% endif%}">
-                    <a href="javascript:void(0)" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons bx bx-box"></i>
-                        <div data-i18n="User interface">Editeur</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="ui-accordion.html" class="menu-link">
-                                <div data-i18n="Accordion">Liste des adherants</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ui-alerts.html" class="menu-link">
-                                <div data-i18n="Alerts">Demandes d'adhésion</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ui-alerts.html" class="menu-link">
-                                <div data-i18n="Alerts">Envoyer un e-mail</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                {%if userAdhesion is defined %}
 
-                <!-- Extended components -->
-                <li class="menu-item {% if gestionNav is defined and gestionNav %} active {% endif%}">
-                <a href="javascript:void(0)" class="menu-link">
-                    <i class="menu-icon tf-icons bx bx-copy"></i>
-                    <div data-i18n="Extended UI">Gestion des Editeurs</div>
-                </a>
+                    <!-- Components -->
+                    <li class="menu-header small text-uppercase"><span class="menu-header-text">Gestions de l'association</span></li>
+                    <!-- Cards -->
+                    <!-- <li class="menu-item">
+                      <a href="cards-basic.html" class="menu-link">
+                        <i class="menu-icon tf-icons bx bx-collection"></i>
+                        <div data-i18n="Basic">Cards</div>
+                      </a>
+                    </li> -->
+                    <!-- User interface -->
+                    {% if userAdhesion.role is not null %}
+                        <li class="menu-item {% if editNav is defined and editNav %} active open {% endif%}">
+                            <a href="javascript:void(0)" class="menu-link menu-toggle">
+                                <i class="menu-icon tf-icons bx bx-box"></i>
+                                <div data-i18n="User interface">Editeur</div>
+                            </a>
+                            <ul class="menu-sub">
+{#                                <li class="menu-item {% if activiteNav is defined and activiteNav %} active {% endif%}">#}
+{#                                    <a href="{{path('app_association.detail',{'id':association.id})}}" class="menu-link">#}
+{#                                        <div data-i18n="Accordion">Gestions</div>#}
+{#                                    </a>#}
+{#                                </li>#}
+                                <li class="menu-item {% if gestionsNav is defined and gestionsNav %} active {% endif%}">
+                                    <a href="{{path('app_adhesion',{'id':association.id})}}" class="menu-link">
+                                        <div data-i18n="Accordion">Gestions</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item {% if da is defined and da %} active {% endif%}">
+                                    <a href="{{path('app_adhesion.demande',{'id':association.id})}}" class="menu-link">
+                                        <div data-i18n="Alerts">Demandes d'adhésion</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a href="ui-alerts.html" class="menu-link">
+                                        <div data-i18n="Alerts">Envoyer un e-mail</div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    {%endif%}
+                    {% if userAdhesion.role=='PRESIDENT' %}
 
-            </li>
+                        <!-- Extended components -->
+                        <li class="menu-item {% if gestionNav is defined and gestionNav %} active {% endif%}">
+                            <a href="javascript:void(0)" class="menu-link">
+                                <i class="menu-icon tf-icons bx bx-copy"></i>
+                                <div data-i18n="Extended UI">Gestion des Editeurs</div>
+                            </a>
+                        </li>
+                        {%endif%}
+                    {%endif%}
             {% endif %}
         </ul>
     {% else %}

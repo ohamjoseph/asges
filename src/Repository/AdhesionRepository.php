@@ -6,6 +6,8 @@ use App\Entity\Adhesion;
 use App\Entity\Association;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -67,6 +69,13 @@ class AdhesionRepository extends ServiceEntityRepository
             'user'=>$user,
             'status'=>'ACTIVE'
         ]);
+    }
+
+    public function userAdhesionsNCreer(User $user):ArrayCollection
+    {
+        $critere = new Criteria();
+        $critere->where(Criteria::expr()->neq('status','CREER'));
+        return $this->matching($critere);
     }
 
     public function userAdhesionsSuppend(User $user):array

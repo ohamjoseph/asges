@@ -8,6 +8,7 @@ use App\Entity\Mail;
 use App\Entity\User;
 use App\Form\MailType;
 use App\Service\MailerService;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,22 +38,68 @@ class AdhesionController extends AbstractController
     {
     }
 
+    #[Route('demande/{id}',name: 'app_adhesion.demande')]
+    public function listDemandeAdhesion(Association $association,
+                                        ManagerRegistry $doctrine
+    ):Response{
+        $critere = new Criteria();
+        $critere->orderBy(['createAt'=>'desc']);
+        $critere->where(Criteria::expr()->eq('status','CREER'));
+        $critere->andWhere(Criteria::expr()->eq('association',$association));
 
+        $repo = $doctrine->getRepository(Adhesion::class);
+        $adhesions = $repo->matching($critere);
+
+        /** @var TYPE_NAME $userAdhesion */
+        $userAdhesion = $repo
+            ->userAdhesion(
+                $association,
+                $this->getUser()
+            );
+
+        return $this->render('adhesion/index.html.twig', [
+            'adhesions' => $adhesions,
+            'association'=>$association,
+            'editNav'=>true,
+            'userAdhesion'=>$userAdhesion,
+            'da'=>true,
+
+        ]);
+    }
+
+
+    // Gestion des associations
     #[Route('/association/{id}', name: 'app_adhesion')]
-    public function index(Association $association, Request $request): Response
+    public function index(Association $association,
+                          Request $request,
+                          ManagerRegistry $doctrine
+    ): Response
     {
-        $adhesions = $association->getAdhesions();
-        try {
-            $notFlush = $request->request->get('notFlush');
-        }catch (\Exception $e){
-            $notFlush = null;
-        }
+        //Les critère de selection
+        $critere = new Criteria();
+        $critere->orderBy(['createAt'=>'desc']);
+        $critere->where(Criteria::expr()->neq('status','CREER'));
+        $critere->andWhere(Criteria::expr()->eq('association',$association));
+
+
+        $repo = $doctrine->getRepository(Adhesion::class);
+        $adhesions = $repo->matching($critere);
+
+        /** @var TYPE_NAME $userAdhesion */
+        $userAdhesion = $repo
+            ->userAdhesion(
+                $association,
+                $this->getUser()
+            );
 
 
         return $this->render('adhesion/index.html.twig', [
             'adhesions' => $adhesions,
             'association'=>$association,
-            'notFlush' => $notFlush
+            'editNav'=>true,
+            'userAdhesion'=>$userAdhesion,
+            'gestionsNav'=>true,
+
         ]);
     }
 
@@ -67,6 +114,7 @@ class AdhesionController extends AbstractController
         return $this->render('adhesion/association_user_adhesion_detail.html.twig',[
             'adhesion'=>$adhesion,
             'userAdhesion'=>$userAdhesion,
+            'association'=>$adhesion->getAssociation()
         ]);
 
     }

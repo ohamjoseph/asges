@@ -111,6 +111,8 @@ class AssociationController extends AbstractController
             'association' => $association,
             'adhesions' => $adhesion,
             'userAdhesion'=>$userAdhesion,
+            'associationNav'=>true,
+            'open'=>true,
 
         ]);
     }

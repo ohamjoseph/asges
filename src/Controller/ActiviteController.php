@@ -65,6 +65,8 @@ class ActiviteController extends AbstractController
 
             return $this->redirectToRoute('app_adhesion', [
                 'id' => $association->getId(),
+                'editNav'=>true,
+                'addNav'=>true
             ]);
         }
 
@@ -89,7 +91,10 @@ class ActiviteController extends AbstractController
             );
         return $this->render('activite/detail.html.twig', [
             'activite' => $activite,
-            'userAdhesion' => $userAdhesion
+            'association'=>$activite->getAssociation(),
+            'userAdhesion' => $userAdhesion,
+            'editNav'=>true,
+            'activiteNav'=>true,
         ]);
     }
 
@@ -105,6 +110,7 @@ class ActiviteController extends AbstractController
         $this->addFlash('succes', "L'activité a bien été mise a jour");
         return $this->redirectToRoute('app_activite.detail', [
             'id' => $activite->getId(),
+
         ]);
     }
 }

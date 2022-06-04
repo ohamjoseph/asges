@@ -1,17 +1,17 @@
 {% extends 'theme/base/base_main.html.twig' %}
 
-{% block title %}Mes associations{% endblock %}
+{% block title %}Les activité{% endblock %}
 
 {% block body %}
     <div class="row">
 
-        {%if userAdhesion.role is defined and userAdhesion.role is not null %}
-            <div class=" mb-3 d-flex justify-content-end">
-                <a href="{{path('app_adhesion',{'id':association.id})}}" class="btn btn-primary m-0">
-                    <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Gestion de l'association
-                </a>
-            </div>
-        {% endif %}
+{#        {%if userAdhesion.role is defined and userAdhesion.role is not null %}#}
+{#            <div class=" mb-3 d-flex justify-content-end">#}
+{#                <a href="{{path('app_adhesion',{'id':association.id})}}" class="btn btn-primary m-0">#}
+{#                    <span class="tf-icons bx bx-pie-chart-alt"></span>&nbsp; Gestion de l'association#}
+{#                </a>#}
+{#            </div>#}
+{#        {% endif %}#}
     </div>
     <div class="row">
         {%for activite in association.getActivites%}
