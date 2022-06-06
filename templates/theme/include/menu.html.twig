@@ -4,10 +4,16 @@
             <span class="app-brand-text demo menu-text fw-bolder ms-2">AsGes</span>
         </a>
 
+
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
     </div>
+    {%if association is defined%}
+        <div class="text-muted h4 app-brand demo ">
+            {{association.nom}}
+        </div>
+    {%endif%}
 
     <div class="menu-inner-shadow"></div>
     {% if app.user %}
@@ -74,8 +80,8 @@
                         </li>
                     </ul>
                 </li>
-                <li class="menu-item {% if profilNav is defined and profilNav %} active {% endif%}">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <li class="menu-item {% if profileNav is defined and profileNav %} active {% endif%}">
+                    <a href="{{path('app_user_new',{'id':app.user.id})}}" class="menu-link ">
                         <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                         <div data-i18n="Authentications">Profile</div>
                     </a>
@@ -149,24 +155,11 @@
                                         <div data-i18n="Alerts">Demandes d'adhésion</div>
                                     </a>
                                 </li>
-                                <li class="menu-item">
-                                    <a href="ui-alerts.html" class="menu-link">
-                                        <div data-i18n="Alerts">Envoyer un e-mail</div>
-                                    </a>
-                                </li>
+
                             </ul>
                         </li>
                     {%endif%}
-                    {% if userAdhesion.role=='PRESIDENT' %}
 
-                        <!-- Extended components -->
-                        <li class="menu-item {% if gestionNav is defined and gestionNav %} active {% endif%}">
-                            <a href="javascript:void(0)" class="menu-link">
-                                <i class="menu-icon tf-icons bx bx-copy"></i>
-                                <div data-i18n="Extended UI">Gestion des Editeurs</div>
-                            </a>
-                        </li>
-                        {%endif%}
                     {%endif%}
             {% endif %}
         </ul>

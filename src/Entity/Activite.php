@@ -13,8 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Activite
 {
 
-    use TimeStempTrait;
     use StatusActiviteTrait;
+    use TimeStempTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

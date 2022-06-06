@@ -18,12 +18,15 @@
     <div class="row">
 
         <div class="col d-flex justify-content-end">
-            <button  class="btn btn-warning me-2" data-bs-toggle="modal"
-               data-bs-target="#modalCenter">
-                Importer des Adhérants
-            </button>
-            <a href="{{path('app_adhesion.mail',{'id':association.adhesions.last.id,'pub':true})}}" class="btn btn-success me-2">Envoyer un publipostage</a>
+{#            <button  class="btn btn-warning me-2" data-bs-toggle="modal"#}
+{#               data-bs-target="#modalCenter">#}
+{#                Importer des Adhérants#}
+{#            </button>#}
+            {%if userAdhesion.role == 'PRESIDENT'%}
+                <a href="{{path('app_association.add',{'id':association.id})}}" class="btn btn-success me-2">Mettre a jours</a>
+            {%endif%}
             <a href="{{path('app_activite',{'id':association.id})}}" class="btn btn-primary">Ajouter une activité</a>
+
         </div>
 
     </div>
@@ -50,9 +53,69 @@
                         data-bs-parent="#accordionExample"
                 >
                     <div class="accordion-body">
-                        Lemon drops chocolate cake gummies carrot cake chupa chups muffin topping. Sesame snaps icing
-                        marzipan gummi bears macaroon dragée danish caramels powder. Bear claw dragée pastry topping
-                        soufflé. Wafer gummi bears marshmallow pastry pie.
+
+                        <div class=" mb-3">
+                            <div class="row g-0">
+                                <div class="col-md-3">
+                                    <img class="card-img-top" src="{{asset('/uploads/logo/')}}{{association.logo}}" alt="Card image cap" />
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{association.nom}}</h5>
+                                        <p class="card-text">
+                                            <dt>
+                                                {{association.objectif}}
+                                            </dt>
+                                            <dd>
+                                                {{association.description}}
+                                            </dd>
+                                            <dt>Membre: {{association.nbrAdherant}}</dt>
+                                        </p>
+                                        <dt class="my-2">
+                                            Creer {{association.createAt|format_datetime('short','none')}}
+                                        </dt>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-end p-2">
+
+                <span class="badge bg-{%if association.status=='ACCEPTER'%}success{%elseif association.status=='ANNULER'%}danger{%elseif association.status=='SUSPENDUS'%}warnig{%elseif association.status=='TERMINER'%}primary{%endif%}">
+                    {{association.status}}</span>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+{#                                <div class="my-2 d-flex justify-content-end ">#}
+{#                                    {% if not userAdhesion.role == 'PRESIDENT' and not userAdhesion.role == 'EDITEUR'%}#}
+{#                                        <a href="histo" class="btn btn-outline-secondary mx-2">Retour</a>#}
+
+{#                                    {% elseif userAdhesion.role == 'PRESIDENT' or userAdhesion.role == 'EDITEUR'%}#}
+{#                                        <a href="{{path('app_adhesion',{'id':userAdhesion.association.id})}}" class="btn btn-outline-secondary mx-2">Retour</a>#}
+
+{#                                        {% if activite.status == 'ACTIVE' %}#}
+{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'terminer'})}}" class="btn btn-primary mx-2">TERMINER</a>#}
+{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>#}
+{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>#}
+{#                                        {%elseif activite.status != 'TERMINER'%}#}
+{#                                            {% if activite.status != 'ANNULER'%}#}
+{#                                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>#}
+{#                                                {% if activite.status == 'SUSPENDUS' %}#}
+{#                                                    <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
+{#                                                {%else%}#}
+{#                                                    <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>#}
+{#                                                {% endif %}#}
+{#                                            {%else%}#}
+
+{#                                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
+
+{#                                            {% endif%}#}
+
+{#                                        {%endif%}#}
+{#                                    {% endif %}#}
+{#                                </div>#}
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -104,13 +167,13 @@
                 <h2 class="accordion-header" id="headingThree">
                     <button
                             type="button"
-                            class="accordion-button collapsed"
+                            class="accordion-button collapsed d-flex justify-content-between"
                             data-bs-toggle="collapse"
                             data-bs-target="#accordionThree"
                             aria-expanded="false"
                             aria-controls="accordionThree"
                     >
-                        Listes des membres
+                        Listes de membres
                     </button>
                 </h2>
                 <div
@@ -120,29 +183,32 @@
                         data-bs-parent="#accordionExample"
                 >
                     <div class="accordion-body">
-                        <div class="table-responsive text-nowrap">
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Adresse</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody class="table-border-bottom-0">
-                                {% for adhesion in adhesions %}
-                                    {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
-                                        {%include 'theme/include/association_ligne.html.twig' with {'adhesion':adhesion}%}
-                                    {%endif%}
-                                {% endfor %}
-                                </tbody>
-                            </table>
+                        <div class="row mb-5">
+                            <div class="table-responsive text-nowrap">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Adresse</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="table-border-bottom-0">
+                                    {% for adhesion in adhesions %}
+                                        {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
+                                            {%include 'theme/include/association_ligne.html.twig' with {'adhesion':adhesion}%}
+                                        {%endif%}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
 
     </div>
@@ -177,46 +243,6 @@
         {% endif %}
     </div>
 
-    <div class="col-lg-4 col-md-6">
-        <div class="mt-3">
-            <!-- Modal -->
-            <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
-                            <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                            ></button>
-                        </div>
-                        <div class="modal-body">
 
-                            <form method="POST" action="{{path('xlsx',{'id':association.id})}} " enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label for="formFile" class="form-label">Default file input example</label>
-                                    <input class="form-control" name="xlsx" type="file" id="formFile" required/>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                                        Close
-                                    </button>
-                                    <button type="submit" class="btn btn-primary">Importer</button>
-                                </div>
-                                <input type="text" name="cc" class="form-control">
-
-                                <input type="hidden" name="token" value="{{ csrf_token('upload') }}" />
-                            </form>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
 {% endblock %}

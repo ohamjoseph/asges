@@ -66,7 +66,7 @@
         <div class="col-6 d-flex justify-content-end">
             <button  class="btn btn-warning me-2" data-bs-toggle="modal"
                      data-bs-target="#modalCenter"
-                    {%if activite.status!='ACTIVE'%}
+                    {%if activite.status!='ACTIVE' and activite.status is not null %}
                         disabled
                     {%endif%}
             >

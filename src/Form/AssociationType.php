@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Association;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,6 +21,11 @@ class AssociationType extends AbstractType
             ->add('mail')
             ->add('siege')
             ->add('Description')
+            ->add('brochure', FileType::class, [
+                'label' => "Logo de l'association (image)",
+                'mapped' => false,
+                'required' => false,
+            ])
 
         ;
     }

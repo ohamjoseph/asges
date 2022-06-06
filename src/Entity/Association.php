@@ -57,6 +57,9 @@ class Association
     #[ORM\OneToMany(mappedBy: 'association', targetEntity: Activite::class)]
     private $activites;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $logo;
+
     public function __construct()
     {
         $this->adhesions = new ArrayCollection();
@@ -269,6 +272,18 @@ class Association
                 $activite->setAssociation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLogo(): ?string
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?string $logo): self
+    {
+        $this->logo = $logo;
 
         return $this;
     }

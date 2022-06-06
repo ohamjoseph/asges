@@ -38,7 +38,7 @@ class AdhesionController extends AbstractController
     {
     }
 
-    #[Route('demande/{id}',name: 'app_adhesion.demande')]
+    #[Route('/demande/{id}',name: 'app_adhesion.demande')]
     public function listDemandeAdhesion(Association $association,
                                         ManagerRegistry $doctrine
     ):Response{
@@ -57,7 +57,7 @@ class AdhesionController extends AbstractController
                 $this->getUser()
             );
 
-        return $this->render('adhesion/index.html.twig', [
+        return $this->render('adhesion/demande_adhesion.html.twig', [
             'adhesions' => $adhesions,
             'association'=>$association,
             'editNav'=>true,

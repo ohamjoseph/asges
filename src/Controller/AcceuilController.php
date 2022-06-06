@@ -3,17 +3,25 @@
 namespace App\Controller;
 
 use App\Entity\Association;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/acceuil')]
+#[Route('/')]
 class AcceuilController extends AbstractController
 {
-    #[Route('/{page?1}', name: 'app_acceuil')]
+    #[Route('/{page?1}', name: 'app_acceuil',requirements: ['page'=>'\d+'])]
     public function index(ManagerRegistry $doctrine, $page): Response
     {
+
+        $nbr = 6;
+        $critere = new Criteria();
+        $critere->orderBy(['createAt'=>'desc']);
+        $critere->where(Criteria::expr()->eq('status','ACCEPTER'));
+//        $critere->setLimit($nbr);
+//        $critere->offset(($page - 1) * $nbr);
         $associationRepo = $doctrine->getRepository(Association::class);
 
         try {
@@ -22,11 +30,12 @@ class AcceuilController extends AbstractController
         }catch (\Exception $e){
             //
         }
-        $nbr = 6;
-        $repository = $doctrine->getRepository(Association::class);
-        $associations = $repository->findBy([], [], $nbr, ($page - 1) * $nbr);
 
-        $nbPersonne = $repository->count([]);
+        $repository = $doctrine->getRepository(Association::class);
+        $associations = $repository->findBy(['status'=>'ACCEPTER'], ['createAt'=>'desc'], $nbr, ($page - 1) * $nbr);
+//        $associations = $repository->matching($critere);
+
+        $nbPersonne = $repository->count(['status'=>'ACCEPTER']);
         $nbPage = ceil($nbPersonne / $nbr);
 
         return $this->render('acceuil/index.html.twig', [

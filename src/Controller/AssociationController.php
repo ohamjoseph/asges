@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Adhesion;
 use App\Entity\Association;
 use App\Form\AssociationType;
+use App\Service\uploaderService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,16 +23,32 @@ class AssociationController extends AbstractController
         ]);
     }
 
-    #[Route('/add', name: 'app_association.add')]
+    #[Route('/add/{id?0}', name: 'app_association.add',requirements: ['id'=>'\d+'])]
     public function addAssociation(
         ManagerRegistry $doctrine,
         Request         $request,
+        uploaderService $uploader,
+        $id
     ): Response
     {
+        $nouv = false;
         $entityRegister = $doctrine->getManager();
+        $repo = $doctrine->getRepository(Association::class);
 
-        $association = new Association();
-        $association->setNbrAdherant(1);
+        if($id!=0){ //mise a jour
+            try {
+                $association = $repo->find($id);
+                $m = 'Votre association a bien été mise a jour';
+            }catch (\Exception){
+                return $this->redirectToRoute('app_acceuil');
+            }
+        }else{//Ajout
+            $nouv = true;
+            $association = new Association();
+            $association->setNbrAdherant(1);
+            $m = 'Votre association a bien été ajouté';
+        }
+
         $form = $this->createForm(AssociationType::class, $association);
 
         //
@@ -39,22 +56,28 @@ class AssociationController extends AbstractController
         if ($form->isSubmitted()) {
             // $form->getData() holds the submitted values
             // but, the original `$task` variable has also been updated
-            $association = $form->getData();
-            $adhesion = new Adhesion();
-            $adhesion
-                ->setUser($this->getUser())
-                ->setAssociation($association)
-                ->setRole("PRESIDENT")
-                ->setStatus('ACTIVE')
+            $flyers = $form->get('brochure')->getData();
 
-            ;
+            if ($flyers) {
+                $directory = $this->getParameter('association_directory');
+                $association->setLogo($uploader->uploadFile($flyers, $directory));
+            }
+            $entityRegister->persist($association);
+
+            if($nouv){
+                $adhesion = new Adhesion();
+                $adhesion
+                    ->setUser($this->getUser())
+                    ->setAssociation($association)
+                    ->setRole("PRESIDENT")
+                    ->setStatus('ACTIVE')
+                ;
+
+                $adhesionRepo = $doctrine->getRepository(Adhesion::class);
+                $adhesionRepo->add($adhesion);
+            }
 
             // ... perform some action, such as saving the task to the database
-
-            $entityRegister->persist($association);
-            $adhesionRepo = $doctrine->getRepository(Adhesion::class);
-            $adhesionRepo->add($adhesion);
-
 
 
             //excute
@@ -62,7 +85,14 @@ class AssociationController extends AbstractController
 
 //            $mailMessage = $personne->getFirstname() . ' ' . $personne->getLastname() . ' a été ajouté';
 //            $mailerService->sendEmail(content: $mailMessage);
-            return $this->redirectToRoute('app_acceuil');
+
+            $this->addFlash('succes',$m);
+            if($nouv){
+                return $this->redirectToRoute('app_acceuil');
+            }else{
+                return $this->redirectToRoute('app_adhesion',['id'=>$association->getId()]);
+            }
+
         }
 
         return $this->render('association/new.html.twig', [

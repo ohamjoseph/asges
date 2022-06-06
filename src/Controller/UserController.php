@@ -27,16 +27,32 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository): Response
+    #[Route('/new/{id?0}',
+        name: 'app_user_new',
+        requirements: ['id'=>'\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function new(Request $request, UserRepository $userRepository, $id): Response
     {
-        $user = new User();
+        $nouv = false;
+
+        if($id!=0){
+            $user = $userRepository->find($id);
+            $m = 'Votre profile a bien été mise à jour';
+        }else{
+            $nouv = true;
+            $user = new User();
+            $m = 'Bienvenu sur AsGes';
+        }
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
             $userRepository->add($user, true);
+
+            $this->addFlash('succes',$m);
 
             return $this->redirectToRoute('app_acceuil', [], Response::HTTP_SEE_OTHER);
         }
@@ -44,6 +60,7 @@ class UserController extends AbstractController
         return $this->renderForm('user/new.html.twig', [
             'user' => $user,
             'form' => $form,
+            'profileNav'=>true
         ]);
     }
 
