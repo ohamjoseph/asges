@@ -11,6 +11,7 @@ use App\Service\MailerService;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -289,12 +290,20 @@ class AdhesionController extends AbstractController
             ]);
         }
 
-
+        $userAdhesion = $doctrine->getRepository(Adhesion::class)
+            ->userAdhesion(
+                $adhesion->getAssociation(),
+                $this->getUser()
+            );
         return $this->render('adhesion/email.html.twig',[
             'form'=>$form->createView(),
             'adhesion'=>$adhesion,
             'adhesions'=>$adhesion->getAssociation()->getAdhesions(),
             'pub' => $pub,
+            'editNav'=>true,
+            'userAdhesion'=>$userAdhesion,
+            'gestionsNav'=>true,
+            'association'=>$adhesion->getAssociation(),
         ]);
     }
 
@@ -321,48 +330,49 @@ class AdhesionController extends AbstractController
         $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true); // here, the read data is turned into an array
 
         $userRepo = $doctrine->getManager();
+        $userRepository = $doctrine->getRepository(User::class);
         $adhesionRepo = $doctrine->getManager();
 
 
         foreach ($sheetData as $data){
 
-            try {
-                $user = new User();
 
+                $user = new User();
                 $username = $data['A'];
                 $mail = $data['B'];
                 $adresse = $data['C'];
+                // Vérifier si le username n'existe pas deja
+                $id = $userRepository->findOneBy(['username'=>$username]);
+                if($id){
+                    $this->addFlash('info',$username.' existe deja dans la base de données ');
+                }else{
+                    $mp = uniqid();
+                    $user->setUsername($username)
+                        ->setEmail($mail)
+                        ->setAdresse($adresse)
+                        ->setPassword($this->hasher->hashPassword($user, $mp ))
+                    ;
 
-                $mp = uniqid();
-                $user->setUsername($username)
-                    ->setEmail($mail)
-                    ->setAdresse($adresse)
-                    ->setPassword($this->hasher->hashPassword($user, $mp ))
-                ;
+                    $userRepo->persist($user);
+                    $userRepo->flush();
 
-                $userRepo->persist($user);
-                $userRepo->flush();
+                    $adhesion = new Adhesion();
+                    $adhesion->setAssociation($association);
+                    $adhesion->setUser($user)->setStatus($this->status['active']);
+                    $adhesionRepo->persist($adhesion);
+                    $adhesionRepo->flush();
 
-                $adhesion = new Adhesion();
-                $adhesion->setAssociation($association);
-                $adhesion->setUser($user)->setStatus($this->status['active']);
-                $adhesionRepo->persist($adhesion);
-                $adhesionRepo->flush();
+                    $subject = "Adhesion a l'association $association";
+                    $this->addFlash('succes',$username.'A bien été ajouter');
 
-                $subject = "Adhesion a l'association $association";
-                $this->addFlash('succes','Ok');
-
-                //Envoi de mail
-                $message = "$username, <br><br>Vous avez été integré dans l'association $association<br><br>
+                    //Envoi de mail
+                    $message = "$username, <br><br>Vous avez été integré dans l'association $association<br><br>
             Vos identifiants:<br><br>
             usernane : $username<br><br>
             mot de passe: $mp";
 
-                $mailerService->sendEmail(to: $mail,subject: $subject,content: $message);
-            }
-            catch (\Exception $e) {
-                $this->addFlash('info',$user.' existe deja dans la base de données ');
-            }
+                    $mailerService->sendEmail(to: $mail,subject: $subject,content: $message);
+                }
 
         }
 
