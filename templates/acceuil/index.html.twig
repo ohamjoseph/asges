@@ -150,19 +150,6 @@
             url = '{{ path("app_adhesion.add", {'id': 'ass.id'}) }}';
             url = url.replace("ass.id", valeur);
             btn.setAttribute("href",url);
-
         }
-        {#$(".tt").click(function(event) {#}
-        {#    var ass = (event.target.getAttribute('id'));#}
-        {#    $( "#ass" ).html(ass);#}
-
-        {#    var valeur = (event.target.getAttribute('data-entry'));#}
-        {#    valeur =  parseInt(valeur)#}
-        {#    url = '{{ path("app_adhesion.add", {'id': 'ass.id'}) }}';#}
-
-        {#    url = url.replace("ass.id", valeur);#}
-        {#    $( "#btn_ad" ).attr("href",url);#}
-
-        {#});#}
     </script>
 {% endblock %}
