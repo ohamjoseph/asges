@@ -4,27 +4,14 @@
 
 {% block body %}
 
-{#        {%if app.session.get('notFlush') is defined and not app.session.get('notFlush') %}#}
-{#            <div class="alert alert-warning alert-dismissible fade show" role="alert">#}
-{#                <ul>#}
-{#                {% for u in app.session.get('notFlush') %}#}
-{#                    <li>#}
-{#                        {{u}}#}
-{#                    </li>#}
-{#                {%endfor%}#}
-{#                </ul>#}
-{#            </div>#}
-{#        {% endif %}#}
+
     <div class="row">
 
         <div class="col d-flex justify-content-end">
-{#            <button  class="btn btn-warning me-2" data-bs-toggle="modal"#}
-{#               data-bs-target="#modalCenter">#}
-{#                Importer des Adhérants#}
-{#            </button>#}
             {%if userAdhesion.role == 'PRESIDENT'%}
                 <a href="{{path('app_association.add',{'id':association.id})}}" class="btn btn-success me-2">Mettre a jours</a>
             {%endif%}
+            <a href="{{path('app_adhesion.mail',{'id':association.adhesions.last.id,'pub':true})}}" class="btn btn-warning me-2">Envoyer un publipostage</a>
             <a href="{{path('app_activite',{'id':association.id})}}" class="btn btn-primary">Ajouter une activité</a>
 
         </div>
@@ -84,34 +71,6 @@
                             </div>
                             <hr>
                             <div class="row">
-{#                                <div class="my-2 d-flex justify-content-end ">#}
-{#                                    {% if not userAdhesion.role == 'PRESIDENT' and not userAdhesion.role == 'EDITEUR'%}#}
-{#                                        <a href="histo" class="btn btn-outline-secondary mx-2">Retour</a>#}
-
-{#                                    {% elseif userAdhesion.role == 'PRESIDENT' or userAdhesion.role == 'EDITEUR'%}#}
-{#                                        <a href="{{path('app_adhesion',{'id':userAdhesion.association.id})}}" class="btn btn-outline-secondary mx-2">Retour</a>#}
-
-{#                                        {% if activite.status == 'ACTIVE' %}#}
-{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'terminer'})}}" class="btn btn-primary mx-2">TERMINER</a>#}
-{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>#}
-{#                                            <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>#}
-{#                                        {%elseif activite.status != 'TERMINER'%}#}
-{#                                            {% if activite.status != 'ANNULER'%}#}
-{#                                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'annuler'})}}" class="btn btn-danger mx-2">Annuler</a>#}
-{#                                                {% if activite.status == 'SUSPENDUS' %}#}
-{#                                                    <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
-{#                                                {%else%}#}
-{#                                                    <a href="{{path('app_activite.status', {'id':activite.id,'status':'suspendus'})}}" class="btn btn-warning mx-2">Suspendre</a>#}
-{#                                                {% endif %}#}
-{#                                            {%else%}#}
-
-{#                                                <a href="{{path('app_activite.status', {'id':activite.id,'status':'active'})}}" class="btn btn-secondary mx-2">Relancer</a>#}
-
-{#                                            {% endif%}#}
-
-{#                                        {%endif%}#}
-{#                                    {% endif %}#}
-{#                                </div>#}
 
                             </div>
                         </div>
@@ -197,7 +156,7 @@
                                     </thead>
                                     <tbody class="table-border-bottom-0">
                                     {% for adhesion in adhesions %}
-                                        {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
+                                        {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT' and adhesion.status =='ACTIVE'%}
                                             {%include 'theme/include/association_ligne.html.twig' with {'adhesion':adhesion}%}
                                         {%endif%}
                                     {% endfor %}

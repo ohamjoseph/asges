@@ -46,6 +46,7 @@
                             data-bs-target="#modalCenter"
                             id = '{{association}}'
                             data-entry = '{{association.id}}'
+                            onclick="get_btn(this.id,{{association.id}})"
                     >
                         <span class='bx bx-user-plus'></span>
                         <span class="d-none d-md-inline">Adherer</span>
@@ -129,7 +130,7 @@
                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                                 Annuler
                             </button>
-                            <a id = 'btn_ad' href="" class="btn btn-outline-primary">
+                            <a id = 'btn_ad'  class="btn btn-outline-primary">
                                 &nbsp;Adhérer
                             </a>
                         </div>
@@ -140,18 +141,28 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <script>
-        $(".tt").click(function(event) {
-            var ass = (event.target.getAttribute('id'));
-            $( "#ass" ).html(ass);
-
-            var valeur = (event.target.getAttribute('data-entry'));
-            valeur =  parseInt(valeur)
+    <script type="text/javascript">
+        function get_btn(name, click_id){
+            var btn = document.getElementById('btn_ad');
+            var ass = document.getElementById('ass');
+            ass.textContent = name;
+            valeur =  parseInt(click_id)
             url = '{{ path("app_adhesion.add", {'id': 'ass.id'}) }}';
-
             url = url.replace("ass.id", valeur);
-            $( "#btn_ad" ).attr("href",url);
+            btn.setAttribute("href",url);
 
-        });
+        }
+        {#$(".tt").click(function(event) {#}
+        {#    var ass = (event.target.getAttribute('id'));#}
+        {#    $( "#ass" ).html(ass);#}
+
+        {#    var valeur = (event.target.getAttribute('data-entry'));#}
+        {#    valeur =  parseInt(valeur)#}
+        {#    url = '{{ path("app_adhesion.add", {'id': 'ass.id'}) }}';#}
+
+        {#    url = url.replace("ass.id", valeur);#}
+        {#    $( "#btn_ad" ).attr("href",url);#}
+
+        {#});#}
     </script>
 {% endblock %}

@@ -52,7 +52,7 @@
                                             </thead>
                                             <tbody class="table-border-bottom-0">
                                             {% for adhesion in adhesions %}
-                                                {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT'%}
+                                                {% if adhesion.user != app.user and adhesion.role != 'PRESIDENT' and adhesion.status =='ACTIVE'%}
 
                                                     {%include 'theme/include/association_ligne2.html.twig' with {'adhesion':adhesion}%}
                                                 {%endif%}
